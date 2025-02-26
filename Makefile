@@ -13,7 +13,7 @@ start:
 	uv run gunicorn -w 5 -b 0.0.0.0:$(PORT) page_analyzer:app
 
 render-start:
-	/home/pavel/hexlet_projects/python-project-83/.venv/bin/gunicorn -w 5 -b 0.0.0.0:$(PORT) page_analyzer:app
+	.venv/bin/gunicorn -w 5 -b 0.0.0.0:$(PORT) page_analyzer:app
 
 build:
 	./build.sh
