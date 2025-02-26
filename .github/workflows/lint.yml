@@ -7,18 +7,17 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        # Тестируем наш пакет на нескольких версиях Python
-        python-version: [3.11]
     steps:
       - uses: actions/checkout@v4
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: '3.12'
+        # make depends on uv
       - name: Install dependencies
         run: |
+          pip install uv
           make install
-      - name: Run linter
-        run: make lint
+      - name: Run linter and pytest
+        run: |
+          make lint
