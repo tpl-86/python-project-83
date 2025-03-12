@@ -59,13 +59,8 @@ def urls():
 
 @app.route('/urls/<int:id>')
 def url_id(id):
-    try:
-        url = repo.find_id(id)
-        return render_template('url_id.html', url=url)
-    except psycopg2.Error as e:
-        app.logger.error(f"Database error: {e}")
-        flash('Ошибка базы данных: ' + str(e), 'danger')
-        return render_template('index.html')
+    url = repo.find_id(id)
+    return render_template('url_id.html', url=url)
 
 
 def is_check(name):
