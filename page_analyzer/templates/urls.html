@@ -17,12 +17,12 @@
     <tbody>
     {% for row in content %}
     <tr>
-      <td>{{ row['id'] }}</td>
+      <td>{{ row['url_id'] }}</td>
       <td>
-        <a href="/urls/{{ row['id'] }}">{{ row['name'] }}</a>
+        <a href="/urls/{{ row['url_id'] }}">{{ row['name'] }}</a>
       </td>
-      <td></td>
-      <td></td>
+      <td>{{ row['created_at'] }}</td>
+      <td>{{ row['status_code'] }}</td>
     </tr>
     {% endfor %}
     </tbody>

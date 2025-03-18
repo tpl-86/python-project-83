@@ -18,9 +18,8 @@ def get_db_connection():
 
 @app.route('/', methods=['POST', 'GET'])
 def index():
-    conn = get_db_connection()
-    repo = UrlsRepository(conn)
-    try:
+    with get_db_connection() as conn:
+        repo = UrlsRepository(conn)
         if request.method == 'POST':
             current_url = request.form.get('url')
             if url(current_url):
@@ -39,30 +38,31 @@ def index():
                 flash('Некорректный URL', 'danger')
                 return render_template('index.html', url=current_url)
         return render_template('index.html')
-    finally:
-        conn.close()
 
 
 @app.route('/urls')
 def urls():
-    conn = get_db_connection()
-    repo = UrlsRepository(conn)
-    try:
+    with get_db_connection() as conn:
+        repo = UrlsRepository(conn)
         content = repo.get_content()[::-1]
         return render_template('urls.html', content=content)
-    finally:
-        conn.close()
 
 
-@app.route('/urls/<int:id>')
+@app.route('/urls/<int:id>', methods=['GET'])
 def url_id(id):
-    conn = get_db_connection()
-    repo = UrlsRepository(conn)
-    try:
+    with get_db_connection() as conn:
+        repo = UrlsRepository(conn)
         url = repo.find_id(id)
-        return render_template('url_id.html', url=url)
-    finally:
-        conn.close()
+        checks = repo.url_check(id)[::-1]
+        return render_template('url_id.html', url=url, checks=checks)
+
+
+@app.route('/urls/<int:id>/checks', methods=['POST'])
+def url_checks(id):
+    with get_db_connection() as conn:
+        repo = UrlsRepository(conn)
+        repo.save_checks(id)
+        return redirect(url_for('url_id', id=id))
 
 
 def is_check(name, repo):

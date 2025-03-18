@@ -19,15 +19,17 @@
             </tr>
             <tr>
                 <td>Дата создания</td>
-                <td>{{ url['at_created'] }}</td>
+                <td>{{ url['created_at'] }}</td>
             </tr>
         </table>
 
     <h2 class="mt-5 mb-3">Проверки</h2>
-    <button type="button" class="btn btn-primary">Запустить проверку</button>
+    <form action="/urls/{{ url['id'] }}/checks" method="post">
+    <button type="submit" class="btn btn-primary">Запустить проверку</button>
+    </form>
 
     <div>
-        <table class="table table-bordered table-hover mt-2">
+        <table class="table table-bordered table-hover mt-2" data-test="checks">
             <thead>
                 <tr>
                     <th>ID</th>
@@ -38,6 +40,20 @@
                     <th>Дата создания</th>
                 </tr>
             </thead>
+            {% if checks %}
+            <tbody>
+                {% for check in checks %}
+                    <tr>
+                        <td>{{ check['id'] }}</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td>{{ check['created_at'] }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+            {% endif %}
         </table>
     </div>
     </div>
