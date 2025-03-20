@@ -58,12 +58,12 @@ class UrlsRepository:
             data = self.find_id(id)
             sql = (
                 "INSERT INTO url_checks"
-                "(url_id, status_code, h1, title, description, created_at) "
-                "VALUES (%s, %s, %s, %s, %s, %s);"
+                "(url_id, status_code, h1, title, description) "
+                "VALUES (%s, %s, %s, %s, %s);"
             )
             cur.execute(
                 sql,
-                (data['id'], status_code, h1, title, description, created_at)
+                (data['id'], status_code, h1, title, description)
                 )
             self.conn.commit()
 
