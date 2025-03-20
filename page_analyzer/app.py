@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 from validators import url
 from urllib.parse import urlparse
 import psycopg2
+import requests
 from page_analyzer.urls_repository import UrlsRepository
 
 load_dotenv()
@@ -61,7 +62,15 @@ def url_id(id):
 def url_checks(id):
     with get_db_connection() as conn:
         repo = UrlsRepository(conn)
-        repo.save_checks(id)
+        data = repo.find_id(id)
+        try:
+            response = requests.get(data['name'])
+            response.raise_for_status()  # Поднимает исключение при HTTP-ошибке
+            code = str(response.status_code)
+        except requests.exceptions.RequestException:
+            flash("Произошла ошибка при проверке", 'danger')
+            return redirect(url_for('url_id', id=id))
+        repo.save_checks(id, code)
         return redirect(url_for('url_id', id=id))
 
 
