@@ -47,7 +47,7 @@ def urls():
                     return redirect(url_for('url_id', id=id))
             else:
                 flash('Некорректный URL', 'danger')
-                return render_template('index.html', url=current_url)
+                return render_template('index.html', url=current_url), 422
         content = repo.get_content()[::-1]
         return render_template('urls.html', content=content)
 
