@@ -16,7 +16,9 @@ DATABASE_URL = os.getenv('DATABASE_URL')
 
 
 def get_db_connection():
-    return psycopg2.connect(DATABASE_URL, sslmode="require")
+    # Получаем режим SSL из переменной окружения, по умолчанию 'disable' для локальной разработки
+    ssl_mode = os.getenv('DATABASE_SSL_MODE', 'disable')
+    return psycopg2.connect(DATABASE_URL, sslmode=ssl_mode)
 
 
 @app.route('/', methods=['POST', 'GET'])
