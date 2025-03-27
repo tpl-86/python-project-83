@@ -14,7 +14,7 @@ class UrlsRepository:
                 "url_checks.status_code, "
                 "url_checks.created_at "
                 "FROM urls "
-                "INNER JOIN url_checks ON url_checks.url_id = urls.id "
+                "LEFT JOIN url_checks ON url_checks.url_id = urls.id "
                 "ORDER BY url_checks.url_id, url_checks.created_at DESC;"
                 )
             return [dict(row) for row in cur]
