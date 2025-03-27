@@ -22,8 +22,13 @@ def get_db_connection():
     return psycopg2.connect(DATABASE_URL, sslmode=ssl_mode)
 
 
-@app.route('/', methods=['POST', 'GET'])
+@app.route('/', methods=['GET'])
 def index():
+    return render_template('index.html')
+
+
+@app.route('/urls', methods=['GET', 'POST'])
+def urls():
     with get_db_connection() as conn:
         repo = UrlsRepository(conn)
         if request.method == 'POST':
@@ -43,13 +48,6 @@ def index():
             else:
                 flash('Некорректный URL', 'danger')
                 return render_template('index.html', url=current_url)
-        return render_template('index.html')
-
-
-@app.route('/urls')
-def urls():
-    with get_db_connection() as conn:
-        repo = UrlsRepository(conn)
         content = repo.get_content()[::-1]
         return render_template('urls.html', content=content)
 
@@ -69,7 +67,7 @@ def url_checks(id):
         repo = UrlsRepository(conn)
         data = repo.find_id(id)
         try:
-            response = requests.get(data['name'], timeout=10)
+            response = requests.get(data['name'], timeout=30)
             response.raise_for_status()  # Поднимает исключение при HTTP-ошибке
             code = str(response.status_code)
         except requests.exceptions.RequestException:
