@@ -79,6 +79,7 @@ def url_checks(id):
         meta_tag = soup.find("meta", attrs={"name": "description"})
         description = meta_tag.get('content') if meta_tag else ''
         repo.save_checks(id, code, h1, title, description)
+        flash("Страница успешно проверена", "success")
         return redirect(url_for('url_id', id=id))
 
 
