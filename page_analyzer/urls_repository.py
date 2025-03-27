@@ -8,14 +8,14 @@ class UrlsRepository:
     def get_content(self):
         with self.conn.cursor(cursor_factory=DictCursor) as cur:
             cur.execute(
-                "SELECT DISTINCT ON (url_checks.url_id) "
-                "url_checks.url_id, "
+                "SELECT DISTINCT ON (urls.id) "
+                "urls.id, "
                 "urls.name, "
                 "url_checks.status_code, "
                 "url_checks.created_at "
                 "FROM urls "
                 "LEFT JOIN url_checks ON url_checks.url_id = urls.id "
-                "ORDER BY url_checks.url_id, url_checks.created_at DESC;"
+                "ORDER BY urls.id, url_checks.created_at DESC;"
                 )
             return [dict(row) for row in cur]
 
