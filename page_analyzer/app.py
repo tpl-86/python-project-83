@@ -69,7 +69,7 @@ def url_checks(id):
         repo = UrlsRepository(conn)
         data = repo.find_id(id)
         try:
-            response = requests.get(data['name'])
+            response = requests.get(data['name'], timeout=10)
             response.raise_for_status()  # Поднимает исключение при HTTP-ошибке
             code = str(response.status_code)
         except requests.exceptions.RequestException:
