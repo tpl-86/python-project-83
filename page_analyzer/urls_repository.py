@@ -19,11 +19,6 @@ class UrlsRepository:
                 )
             return [dict(row) for row in cur]
 
-    def get_content_checks(self):
-        with self.conn.cursor(cursor_factory=DictCursor) as cur:
-            cur.execute("SELECT * FROM url_checks")
-            return [dict(row) for row in cur]
-
     def find_name(self, name):
         with self.conn.cursor(cursor_factory=DictCursor) as cur:
             cur.execute('SELECT * FROM urls WHERE name=%s', (name,))
