@@ -1,11 +1,27 @@
+import os
+
+import psycopg2
+from dotenv import load_dotenv
 from psycopg2.extras import DictCursor
+
+load_dotenv()
+
+
+def get_db_connection():
+    """
+    The function returns a connection object
+    to the PostgreSQL database taking
+    into account the SSL mode
+    """
+    ssl_mode = os.getenv('DATABASE_SSL_MODE', 'disable')
+    return psycopg2.connect(os.getenv('DATABASE_URL'), sslmode=ssl_mode)
 
 
 class UrlsRepository:
-    def __init__(self, conn):
-        self.conn = conn
+    def __init__(self, conn=None):
+        self.conn = conn or get_db_connection()
 
-    def get_content(self):
+    def get_urls_with_check(self):
         with self.conn.cursor(cursor_factory=DictCursor) as cur:
             cur.execute(
                 "SELECT DISTINCT ON (urls.id) "
@@ -15,24 +31,24 @@ class UrlsRepository:
                 "url_checks.created_at "
                 "FROM urls "
                 "LEFT JOIN url_checks ON url_checks.url_id = urls.id "
-                "ORDER BY urls.id, url_checks.created_at DESC;"
+                "ORDER BY urls.id DESC, url_checks.created_at DESC;"
                 )
             return [dict(row) for row in cur]
 
-    def find_name(self, name):
+    def find_url_by_name(self, name):
         with self.conn.cursor(cursor_factory=DictCursor) as cur:
             cur.execute('SELECT * FROM urls WHERE name=%s', (name,))
             row = cur.fetchone()
             return row
 
-    def find_id(self, id):
+    def find_url_by_id(self, id):
         with self.conn.cursor(cursor_factory=DictCursor) as cur:
             cur.execute("SELECT * FROM urls WHERE id=%s", (id,))
             row = cur.fetchone()
             return dict(row) if row else None
 
-    def save(self, name):
-        if self.find_name(name):
+    def add_url(self, name):
+        if self.find_url_by_name(name):
             return None
         with self.conn.cursor(cursor_factory=DictCursor) as cur:
             cur.execute(
@@ -41,7 +57,7 @@ class UrlsRepository:
             self.conn.commit()
             return new_id
 
-    def save_checks(
+    def save_check(
             self, id,
             status_code='',
             h1='',
@@ -49,7 +65,7 @@ class UrlsRepository:
             description='',
             ):
         with self.conn.cursor(cursor_factory=DictCursor) as cur:
-            data = self.find_id(id)
+            url_record = self.find_url_by_id(id)
             sql = (
                 "INSERT INTO url_checks"
                 "(url_id, status_code, h1, title, description) "
@@ -57,15 +73,16 @@ class UrlsRepository:
             )
             cur.execute(
                 sql,
-                (data['id'], status_code, h1, title, description)
+                (url_record['id'], status_code, h1, title, description)
                 )
             self.conn.commit()
 
-    def url_check(self, id):
+    def get_url_checks_by_id(self, id):
         with self.conn.cursor(cursor_factory=DictCursor) as cur:
             sql = (
                 'SELECT * FROM url_checks '
-                'WHERE url_id = (%s);'
+                'WHERE url_id = (%s) '
+                'ORDER BY id DESC;'
             )
             cur.execute(sql, (id,))
             row = cur.fetchall()
