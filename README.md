@@ -24,23 +24,23 @@ source .venv/bin/activate
 psql -U <user> -d <database_name> -f database.sql
 
 # Setting Environment Variables\
-DATABASE_URL=postgres://<user>:<password>@localhost/<database_name>\
-SECRET_KEY=<random_key_for_security>\
+DATABASE_URL=postgres://<user>:<password>@localhost/<database_name>
+SECRET_KEY=<random_key_for_security>
 DATABASE_SSL_MODE=disable # or 'require' to use SSL
 ```
 
 ## Commands for work:
 
 ```bash
-# To install dependencies and sync\
+# To install dependencies and sync
 make install
 # To run linting\
 make lint
-#To run the application in development mode\
+#To run the application in development mode
 make dev
-# To run your application in production mode with Gunicorn\
+# To run your application in production mode with Gunicorn
 make start
-# To run using Gunicorn for rendering\
+# To run using Gunicorn for rendering
 make render-start
 ```
 
