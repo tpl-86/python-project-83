@@ -23,7 +23,7 @@ source .venv/bin/activate
 # Import database schema
 psql -U <user> -d <database_name> -f database.sql
 
-# Setting Environment Variables\
+# Setting Environment Variables
 DATABASE_URL=postgres://<user>:<password>@localhost/<database_name>
 SECRET_KEY=<random_key_for_security>
 DATABASE_SSL_MODE=disable # or 'require' to use SSL
