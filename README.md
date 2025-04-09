@@ -34,7 +34,7 @@ DATABASE_SSL_MODE=disable # or 'require' to use SSL
 ```bash
 # To install dependencies and sync
 make install
-# To run linting\
+# To run linting
 make lint
 #To run the application in development mode
 make dev
